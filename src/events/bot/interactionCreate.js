@@ -6,11 +6,9 @@ export default {
 
 	async init(client, interaction) {
 		if (!interaction.isChatInputCommand()) return;
-
 		const command = client.commands?.get(interaction.commandName);
 
 		const configs = await client.getUserData(interaction.user.id);
-		console.log(t(configs.lang, "utils.bot.name"));
 
 		if (!command) {
 			return interaction.reply({
@@ -40,7 +38,7 @@ export default {
 			await command.init(interaction, client, configs);
 		} catch (error) {
 			console.error(error);
-			const replyOptions = { content: 'There was an error while executing this command!', ephemeral: true };
+			const replyOptions = { content: t(configs.lang, "errors.normal"), ephemeral: true };
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp(replyOptions);
 			} else {

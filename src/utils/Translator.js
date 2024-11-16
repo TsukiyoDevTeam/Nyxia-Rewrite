@@ -3,29 +3,23 @@ import loadLanguageData from "../modules/language.js";
 
 const langCache = {};
 
-export default async function t(lang, key, reload = false) {
-
-    if (!reload && Object.keys(langCache).length) {
-        return getValueFromLangData(langCache[lang], key);
+(async function preloadLanguages() {
+    try {
+        const langs = await loadLanguageData();
+        Object.assign(langCache, langs);
+    } catch (error) {
+        console.log(error);
+        Logger.error("Translator", "Failed to preload language data", error);
     }
+})();
 
-    if (reload || !Object.keys(langCache).length) {
-        const langData = await reloadLangs();
-        Object.assign(langCache, langData);
+export default function t(lang, key) {
+    if (!langCache[lang]) {
+        Logger.error("Translator", `Language data for ${lang} not found`);
+        return null;
     }
 
     return getValueFromLangData(langCache[lang], key);
-}
-
-async function reloadLangs() {
-    try {
-        const langs = await loadLanguageData();
-        return langs;
-    } catch (error) {
-        console.log(error);
-        Logger.error("Translator", `Failed to reload language data`, error);
-        return {};
-    }
 }
 
 function getValueFromLangData(langData, key) {
