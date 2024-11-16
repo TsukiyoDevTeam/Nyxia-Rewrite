@@ -18,6 +18,7 @@ const cleanAndParseJSON = async (filePath) => {
 
 const addMissingKeys = (enData, langData) => {
     for (const key in enData) {
+        if (key === '__proto__' || key === 'constructor') continue;
         if (key.startsWith('_')) {
             langData[key] = enData[key];
         } else if (typeof enData[key] === 'object' && enData[key] !== null) {
