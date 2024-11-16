@@ -8,6 +8,7 @@ export default {
 		if (!interaction.isChatInputCommand()) return;
 		const command = client.commands?.get(interaction.commandName);
 
+
 		const configs = await client.getUserData(interaction.user.id);
 
 		if (!command) {

@@ -27,6 +27,7 @@ export default {
                         .setRequired(true) // required?
                 )
         ),
+  
     async init(interaction, client, c) {
         const data = await model.findOne({
             user: interaction.user.id

@@ -1,8 +1,9 @@
 {
   "_meta": {
-    "_name": "English",
+    "_name": "French",
     "_translators": [
-      "981755777754755122"
+      "929532941464379433",
+      "709784148373405828"
     ]
   },
   "_1": "Edit from here down",
@@ -18,6 +19,7 @@
     "notServerOwner": "You are not the server owner, the owner is {usermention}!",
     "notDev": "You must be a bot developer to use this command!",
     "normal": "Something went wrong please try again later. If the issue persists, please join our support server!"
+    "cmdNoExist": "This command doesn't exist!"
   },
   "utils": {
     "bot": {

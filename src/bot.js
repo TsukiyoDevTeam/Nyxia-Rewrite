@@ -27,6 +27,8 @@ const client = new Client({
     ],
 });
 
+client.t = t;
+
 async function loadModules() {
     async function getAllFiles(dirPath, arrayOfFiles) {
         const files = fs.readdirSync(dirPath);
