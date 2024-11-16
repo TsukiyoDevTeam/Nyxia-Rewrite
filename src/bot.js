@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Logger from './utils/Logger.js';
+import t from "./utils/Translator.js";
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ const client = new Client({
         GatewayIntentBits.GuildMembers,
     ],
 });
+
+client.t = t;
 
 async function loadModules() {
     const moduleFiles = fs.readdirSync(path.join(__dirname, 'modules'));

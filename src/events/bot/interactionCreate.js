@@ -7,10 +7,11 @@ export default {
 
 		const command = client.commands?.get(interaction.commandName);
 
+		interaction.c = await client.getUserData(interaction.user.id);
+
 		if (!command) {
-			console.error(`No command matching ${interaction.commandName} was found.`);
 			return interaction.reply({
-				content: 'That command does not exist!',
+				content: client.t(interaction.c.lang, "errors.command.cmdNoExist"),
 				ephemeral: true,
 			});
 		}
@@ -27,4 +28,5 @@ export default {
 			}
 		}
 	},
+
 };

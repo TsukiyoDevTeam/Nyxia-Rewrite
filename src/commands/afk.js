@@ -27,6 +27,7 @@ export default {
                 )
         ),
     async init(interaction, client) {
+        const t = client.t;
         const data = await model.findOne({
             user: interaction.user.id
         });
@@ -45,6 +46,6 @@ export default {
         }
 
         const embed = new EmbedBuilder()
-            .setTitle();
+            .setTitle(t());
     },
 };

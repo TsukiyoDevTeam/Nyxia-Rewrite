@@ -1,17 +1,20 @@
 {
   "_meta": {
-    "name": "Turkish",
+    "name": "English",
     "translators": [
-      "751870300760571944"
+      "981755777754755122"
     ]
   },
+  "_1": "Edit from here down",
   "commands": {
     "help": {
       "title": "Help",
       "description": "Display the list of commands"
     }
   },
-  "errors": {},
+  "errors": {
+    "cmdNoExist": "This command doesn't exist!"
+  },
   "utils": {
     "bot": {
       "name": "Nyxia",

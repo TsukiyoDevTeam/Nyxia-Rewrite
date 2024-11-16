@@ -5,10 +5,6 @@ const langCache = {};
 
 export default async function t(langValue, key, reload = false) {
 
-    const lang = {
-        
-    }
-
     if (!reload && Object.keys(langCache).length) {
         return getValueFromLangData(langCache[lang], key);
     }
