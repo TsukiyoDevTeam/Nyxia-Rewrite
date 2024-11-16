@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Logger from './utils/Logger.js';
 import t from "./utils/Translator.js";
+import model from "./models/user.js";
 
 dotenv.config();
 
@@ -51,6 +52,12 @@ async function start() {
     const databaseModule = await import(`file://${path.join(__dirname, 'modules', 'database.js')}`);
     await databaseModule.default();
     await loadModules();
+    const data = await model.find({ badges: { $in: ["Developer"] } });
+    if (data && data.length > 0) {
+        client.devs = data.map((user) => user.user);
+    } else {
+        client.devs = [];
+    }
     await client.login(process.env.BOT_TOKEN);
 
     const endTime = Date.now();

@@ -11,7 +11,24 @@ export default {
 
 		if (!command) {
 			return interaction.reply({
-				content: client.t(interaction.c.lang, "errors.command.cmdNoExist"),
+				content: client.t(interaction.c.lang, "errors.cmdNoExist"),
+				ephemeral: true,
+			});
+		}
+
+		if (command.owner) {
+			const owner = await client.users.cache.get(interaction.guild.ownerId);
+			if (interaction.user.id !== owner.id) {
+				return interaction.reply({
+					content: client.t(interaction.c.lang, "errors.notServerOwner").replace("{owner}", owner),
+					ephemeral: true,
+				});
+			}
+		}
+
+		if (command.dev && !client.devs.includes(interaction.user.id)) {
+			return interaction.reply({
+				content: client.t(interaction.c.lang, "errors.notDev"),
 				ephemeral: true,
 			});
 		}

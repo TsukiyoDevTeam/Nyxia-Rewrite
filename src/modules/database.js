@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Logger from "../utils/Logger.js";
+import model from "../models/user.js";
 
 export default async () => {
     /*
@@ -17,6 +18,7 @@ export default async () => {
         await mongoose.connect(process.env.DB_URL);
         Logger.info("Database", "Connected!");
     } catch (e) {
+        console.log(e);
         Logger.error("Database", "Failed to connect", e);
         process.exit(1);
     }
