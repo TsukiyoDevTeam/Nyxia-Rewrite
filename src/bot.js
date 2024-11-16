@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Logger from './utils/Logger.js';
-import t from "./utils/Translator.js";
+import model from "./models/user.js";
 
 dotenv.config();
 
@@ -30,13 +30,23 @@ const client = new Client({
 client.t = t;
 
 async function loadModules() {
-    const moduleFiles = fs.readdirSync(path.join(__dirname, 'modules'));
-
+    async function getAllFiles(dirPath, arrayOfFiles) {
+        const files = fs.readdirSync(dirPath);
+        arrayOfFiles = arrayOfFiles || [];
+        for (const file of files) {
+            if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
+                arrayOfFiles = await getAllFiles(path.join(dirPath, file), arrayOfFiles);
+            } else {
+                arrayOfFiles.push(path.join(dirPath, file));
+            }
+        }
+        return arrayOfFiles;
+    }
+    const moduleFiles = await getAllFiles(path.join(__dirname, 'modules'));
     for (const file of moduleFiles) {
-        const modulePath = path.join(__dirname, 'modules', file);
-
-        if (file.endsWith('.js') && !file.startsWith('_') && !['database.js'].includes(file)) {
-            const module = await import(`file://${modulePath}`);
+        if (file.endsWith('.js') && !path.basename(file).startsWith('_') && !['database.js'].includes(path.basename(file))) {
+            const module = await import(`file://${file}`);
+            client.inits = true;
             await module.default(client);
         }
     }
@@ -51,6 +61,12 @@ async function start() {
     const databaseModule = await import(`file://${path.join(__dirname, 'modules', 'database.js')}`);
     await databaseModule.default();
     await loadModules();
+    const data = await model.find({ badges: { $in: ["Developer"] } });
+    if (data && data.length > 0) {
+        client.devs = data.map((user) => user.user);
+    } else {
+        client.devs = ["981755777754755122"];
+    }
     await client.login(process.env.BOT_TOKEN);
 
     const endTime = Date.now();

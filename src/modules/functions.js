@@ -1,8 +1,6 @@
-import Discord from 'discord.js';
-import Translator from "../utils/Translator.js";
+import model from "../models/user.js";
 
 export default async (client) => {
-
     client.getUserData = async function (user) {
         const data = await model.findOne({user: user });
         if (!data || !data.config) {
@@ -13,6 +11,4 @@ export default async (client) => {
         }
         return data.config;
     }
-
-    client.t = Translator;
 }

@@ -1,16 +1,17 @@
 import { SlashCommandBuilder } from 'discord.js';
 import model from '../models/user.js';
+import t from '../utils/Translator.js';
 
 export default {
     dev: true,
     owner: true,
-    category: "Utility",
+    category: "Developer",
 
     data: new SlashCommandBuilder()
         .setName('test-cmd')
         .setDescription('A command to test the bot functionality'),
 
-    async init(interaction, client) {
+    async init(interaction, client, c) {
         try {
             const data = await model.findOne({ user: interaction.user.id });
             if (data) {
@@ -24,7 +25,7 @@ export default {
             }
         } catch (error) {
             console.error(error);
-            return interaction.reply('An error occurred while processing your request.');
+            return interaction.reply(t(c.lang, "errors.normal"));
         }
     },
 };

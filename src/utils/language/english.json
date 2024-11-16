@@ -13,6 +13,11 @@
     }
   },
   "errors": {
+    "commands": {},
+    "cmdNoExist": "This command doesn't exist!",
+    "notServerOwner": "You are not the server owner, the owner is {usermention}!",
+    "notDev": "You must be a bot developer to use this command!",
+    "normal": "Something went wrong please try again later. If the issue persists, please join our support server!"
     "cmdNoExist": "This command doesn't exist!"
   },
   "utils": {

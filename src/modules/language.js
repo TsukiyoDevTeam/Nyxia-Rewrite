@@ -15,7 +15,7 @@ const cleanAndParseJSON = async (filePath) => {
         throw new Error(`Error reading or parsing JSON file ${filePath}: ${error.message}`);
     }
 };
-
+ 
 const addMissingKeys = (enData, langData) => {
     for (const key in enData) {
         if (key === '__proto__' || key === 'constructor') continue;
