@@ -79,8 +79,8 @@ export default async (client) => {
                     { body: commands }
                 );
             }
+        return;
 
-            Logger.info('Cmd Loader', 'Successfully registered');
         } catch (error) {
             Logger.error('Cmd Loader', 'Failed to register', error);
             process.exit(1);

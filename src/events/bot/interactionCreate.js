@@ -1,3 +1,5 @@
+import t from "../../utils/Translator.js";
+
 export default {
 	name: "interactionCreate",
 	once: false,
@@ -7,11 +9,12 @@ export default {
 
 		const command = client.commands?.get(interaction.commandName);
 
-		interaction.c = await client.getUserData(interaction.user.id);
+		const configs = await client.getUserData(interaction.user.id);
+		console.log(t(configs.lang, "utils.bot.name"));
 
 		if (!command) {
 			return interaction.reply({
-				content: client.t(interaction.c.lang, "errors.cmdNoExist"),
+				content: t(configs.lang, "errors.cmdNoExist"),
 				ephemeral: true,
 			});
 		}
@@ -20,7 +23,7 @@ export default {
 			const owner = await client.users.cache.get(interaction.guild.ownerId);
 			if (interaction.user.id !== owner.id) {
 				return interaction.reply({
-					content: client.t(interaction.c.lang, "errors.notServerOwner").replace("{owner}", owner),
+					content: eval(t(configs.lang, "errors.notServerOwner")).replace("{owner}", owner),
 					ephemeral: true,
 				});
 			}
@@ -28,13 +31,13 @@ export default {
 
 		if (command.dev && !client.devs.includes(interaction.user.id)) {
 			return interaction.reply({
-				content: client.t(interaction.c.lang, "errors.notDev"),
+				content: eval(t(configs.lang, "errors.notDev")),
 				ephemeral: true,
 			});
 		}
 
 		try {
-			await command.init(interaction, client);
+			await command.init(interaction, client, configs);
 		} catch (error) {
 			console.error(error);
 			const replyOptions = { content: 'There was an error while executing this command!', ephemeral: true };

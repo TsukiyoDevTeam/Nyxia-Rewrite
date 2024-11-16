@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 import model from '../models/user.js';
+import t from '../utils/Translator.js';
 
 export default {
     dev: true,
@@ -26,8 +27,7 @@ export default {
                         .setRequired(true) // required?
                 )
         ),
-    async init(interaction, client) {
-        const t = client.t;
+    async init(interaction, client, c) {
         const data = await model.findOne({
             user: interaction.user.id
         });

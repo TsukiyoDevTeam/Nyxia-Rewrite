@@ -1,5 +1,4 @@
-import Discord from 'discord.js';
-import Translator from "../utils/Translator.js";
+import model from "../models/user.js";
 
 export default async (client) => {
 
@@ -13,6 +12,4 @@ export default async (client) => {
         }
         return data.config;
     }
-
-    client.t = Translator;
 }
