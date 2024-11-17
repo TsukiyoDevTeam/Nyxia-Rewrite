@@ -4,7 +4,7 @@ export default {
 	name: "ready",
 	once: true,
 
-	async init(client) {
+	async init(t, client) {
 		Logger.info("Bot", "Ready!");
 
 	},

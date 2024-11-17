@@ -1,10 +1,4 @@
 {
-  "_meta": {
-    "_name": "Korean",
-    "_translators": [
-      "726304316830253117"
-    ]
-  },
   "_1": "Edit from here down",
   "commands": {
     "help": {
@@ -18,7 +12,6 @@
     "notServerOwner": "You are not the server owner, the owner is {usermention}!",
     "notDev": "You must be a bot developer to use this command!",
     "normal": "Something went wrong please try again later. If the issue persists, please join our support server!"
-    "cmdNoExist": "This command doesn't exist!"
   },
   "utils": {
     "bot": {

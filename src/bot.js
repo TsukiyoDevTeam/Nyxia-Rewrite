@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Logger from './utils/Logger.js';
 import model from "./models/user.js";
+import t from './utils/Translator.js';
 
 dotenv.config();
 
@@ -27,8 +28,6 @@ const client = new Client({
     ],
 });
 
-client.t = t;
-
 async function loadModules() {
     async function getAllFiles(dirPath, arrayOfFiles) {
         const files = fs.readdirSync(dirPath);
@@ -47,7 +46,7 @@ async function loadModules() {
         if (file.endsWith('.js') && !path.basename(file).startsWith('_') && !['database.js'].includes(path.basename(file))) {
             const module = await import(`file://${file}`);
             client.inits = true;
-            await module.default(client);
+            await module.default(client, t);
         }
     }
 }

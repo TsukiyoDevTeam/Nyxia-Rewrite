@@ -61,20 +61,24 @@ export default {
 
     async init(interaction, client, c) {
         console.log(c);
-        switch (subcommand) {
-            case 'add':
-            
-                break;
-            case 'remove':
-
-                break;
-            case 'view':
-
-                break;
-            default:
+        
+        const subcommandHandlers = {
+            add: async () => {
+                // Handle 'add' subcommand
+            },
+            remove: async () => {
+                // Handle 'remove' subcommand
+            },
+            view: async () => {
+                // Handle 'view' subcommand
+            },
+            default: async () => {
                 await interaction.reply('Unknown subcommand.');
-                break;
-        }
+            }
+        };
+        
+        const handler = subcommandHandlers[subcommand] || subcommandHandlers.default;
+        await handler();
 
 
         return interaction.reply("done")

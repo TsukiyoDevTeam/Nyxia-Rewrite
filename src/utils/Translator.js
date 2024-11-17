@@ -7,8 +7,8 @@ const langCache = {};
     try {
         const langs = await loadLanguageData();
         Object.assign(langCache, langs);
+        Logger.info("Translator", "Language data preloaded successfully");
     } catch (error) {
-        console.log(error);
         Logger.error("Translator", "Failed to preload language data", error);
     }
 })();

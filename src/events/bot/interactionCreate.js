@@ -1,10 +1,8 @@
-import t from "../../utils/Translator.js";
-
 export default {
 	name: "interactionCreate",
 	once: false,
 
-	async init(client, interaction) {
+	async init(t, client, interaction) {
 		if (!interaction.isChatInputCommand()) return;
 		const command = client.commands?.get(interaction.commandName);
 
