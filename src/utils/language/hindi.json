@@ -3,20 +3,19 @@
   "commands": {
     "help": {
       "title": "angrezee file ",
-      "description": "Display the list of commands"
+      "description": "soochee pradarshit karen"
     }
   },
   "errors": {
-    "cmdNoExist": "This command doesn't exist!",
+    "cmdNoExist": "yah maujood nahihai , malik {usermention} hai!",
     "commands": {},
-    "notServerOwner": "You are not the server owner, the owner is {usermention}!",
-    "notDev": "You must be a bot developer to use this command!",
-    "normal": "Something went wrong please try again later. If the issue persists, please join our support server!"
+    "notServerOwner": "aap server ke malik nahi hai!",
+    "notDev": "Yeh upayog karne ke liye tumhe bot developer hona chaahie hai!",
+    "normal": "kuchh galat hua hai krpaya baad mein punah prayaas karen. yadi samasya banee rahatee hai, tho krpaya hamaare support sarvar se juden!"
   },
   "utils": {
     "bot": {
       "name": "Nyxia",
-      "desc": "Nyxia is a versatile Discord bot that brings HD music, games, and powerful server management tools to your community. Whether you're looking to automate moderation, keep things fun with interactive activities, or streamline server organization, Nyxia has you covered. Plus, with a customizable economy and a dashboard on the way, there's plenty more to explore!"
-    }
+      "desc": "Nyxia ek bahumukhee diskord bot hai jo aapake samudaay mein echadee sangeet, gem aur shaktishaalee sarvar prabandhan upakaran laata hai. chaahe aap modareshan ko svachaalit karana chaahate hon, intaraiktiv gatividhiyon ke saath cheejon ko mazedaar rakhana chaahate hon, ya sarvar sangathan ko suvyavasthit karana chaahate hon, niksiya ne aapako kavar kiya hai. saath hee, ek anukoolan yogy arthavyavastha aur raaste mein ek daishabord ke saath, talaashane ke lie aur bhee bahut kuchh hai!"
   }
 }
