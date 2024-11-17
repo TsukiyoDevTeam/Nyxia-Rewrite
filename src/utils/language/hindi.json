@@ -8,7 +8,6 @@
   },
   "errors": {
     "cmdNoExist": "yah maujood nahihai , malik {usermention} hai!",
-    "commands": {},
     "notServerOwner": "aap server ke malik nahi hai!",
     "notDev": "Yeh upayog karne ke liye tumhe bot developer hona chaahie hai!",
     "normal": "kuchh galat hua hai krpaya baad mein punah prayaas karen. yadi samasya banee rahatee hai, tho krpaya hamaare support sarvar se juden!"
