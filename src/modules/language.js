@@ -16,22 +16,19 @@ const cleanAndParseJSON = async (filePath) => {
     }
 };
 
-const addMissingKeys = (enData, langData) => {
+const ensureIdenticalStructure = (enData, langData) => {
+    const result = {};
+
     for (const key in enData) {
         if (key === '__proto__' || key === 'constructor') continue;
-        if (key.startsWith('_')) {
-            langData[key] = enData[key];
-        } else if (typeof enData[key] === 'object' && enData[key] !== null) {
-            if (!(key in langData) || langData[key] === null) {
-                langData[key] = {};
-            }
-            addMissingKeys(enData[key], langData[key]);
+        if (typeof enData[key] === 'object' && enData[key] !== null) {
+            result[key] = ensureIdenticalStructure(enData[key], langData[key] || {});
         } else {
-            if (!(key in langData) || langData[key] === null) {
-                langData[key] = enData[key];
-            }
+            result[key] = langData[key] !== undefined ? langData[key] : enData[key];
         }
     }
+
+    return result;
 };
 
 const copyLangFiles = async () => {
@@ -57,34 +54,10 @@ const copyLangFiles = async () => {
             return;
         }
 
-        addMissingKeys(enData, langData);
-
-        for (const key in langData) {
-            if (!(key in enData) && !key.startsWith('_')) {
-                delete langData[key];
-            }
-        }
-
-        const orderedLangData = {};
-        for (const key in enData) {
-            if (key in langData) {
-                orderedLangData[key] = langData[key];
-            }
-        }
-        for (const key in langData) {
-            if (!(key in orderedLangData)) {
-                orderedLangData[key] = langData[key];
-            }
-        }
-
-        for (const key in enData) {
-            if (key.startsWith('_')) {
-                orderedLangData[key] = enData[key];
-            }
-        }
+        const updatedLangData = ensureIdenticalStructure(enData, langData);
 
         try {
-            await fs.writeFile(filePath, JSON.stringify(orderedLangData, null, 2), 'utf8');
+            await fs.writeFile(filePath, JSON.stringify(updatedLangData, null, 2), 'utf8');
         } catch (error) {
             console.error(`Error writing to language file ${file}: ${error.message}`);
         }
