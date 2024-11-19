@@ -1,7 +1,7 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import userModel from "../../models/user.js";
 
-export default async (client, interaction, t) => {
+export default async (client, interaction, t, c) => {
     let fileName, models, value;
     models = [
         userModel,
@@ -25,12 +25,15 @@ export default async (client, interaction, t) => {
         return new AttachmentBuilder(buffer, { name: name + '.json' });
     }
 
+    await interaction.deferReply({fetchReply: true});
+    await interaction.editReply(t(c.lang, "commands.download.user.processing"));
+
     const data = await downloadData(models, value);
     const attachment = await createAttachment(data, fileName);
     const embed = new EmbedBuilder()
         .setTitle(t(c.lang, "commands.download.user.embed.title"))
         .setDescription(t(c.lang, "commands.download.user.embed.desc"))
-        .setFooter(t(c.lang, "utils.footer"))
+        .setFooter({text: t(c.lang, "utils.footer")})
         .setColor(c.colour);
     try {
         await interaction.user.send({
@@ -38,9 +41,9 @@ export default async (client, interaction, t) => {
             embeds: [embed],
             files: [attachment]
         });
-        await interaction.editReply(t(c.lang, "commands.download.user.success"));
     } catch (error) {
-        console.error(error);
-        await interaction.editReply(t(c.lang, "commands.download.user.dmsClosed"));
+        await interaction.editReply(t(c.lang, "commands.download.user.error"));
+        return;
     }
+    await interaction.editReply(t(c.lang, "commands.download.user.success"));
 }

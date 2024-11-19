@@ -1,15 +1,19 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import guildModel from "../../models/guild.js";
 
-export default async (client, interaction, t) => {
+export default async (client, interaction, t, c) => {
     let fileName, model, field, value;
     model = [guildModel];
     value = interaction.user.id;
     fileName = "server-" + interaction.guild.id;
 
-    async function downloadData(model, value) {
-        const documents = await model.find({ guild: value }).exec();
-        return { [model.modelName]: documents };
+    async function downloadData(models, value) {
+        const data = {};
+        for (const model of models) {
+            const documents = await model.find({ user: value }).exec();
+            data[model.modelName] = documents;
+        }
+        return data;
     }
 
     async function createAttachment(data, name) {
@@ -18,29 +22,32 @@ export default async (client, interaction, t) => {
         return new AttachmentBuilder(buffer, { name: name + '.json' });
     }
 
-    if (interaction.guilld.ownerId !== interaction.user.id) {
+    if (interaction.guild.ownerId !== interaction.user.id) {
         return interaction.reply({
             content: t(c.lang, "commands.download.server.notOwner"),
             ephemeral: true
         });
     }
 
+    await interaction.deferReply({fetchReply: true});
+    await interaction.editReply(t(c.lang, "commands.download.server.processing"));
+
     const data = await downloadData(model, value);
     const attachment = await createAttachment(data, fileName);
     const embed = new EmbedBuilder()
         .setTitle(t(c.lang, "commands.download.server.embed.title"))
         .setDescription(t(c.lang, "commands.download.server.embed.desc"))
-        .setFooter(t(c.lang, "utils.footer"))
+        .setFooter({text: t(c.lang, "utils.footer")})
         .setColor(c.colour);
-    try {
-        await interaction.user.send({
-            content: null,
-            embeds: [embed],
-            files: [attachment]
-        });
+        try {
+            await interaction.user.send({
+                content: null,
+                embeds: [embed],
+                files: [attachment]
+            });
+        } catch (error) {
+            await interaction.editReply(t(c.lang, "commands.download.server.dmsClosed"));
+            return;
+        }
         await interaction.editReply(t(c.lang, "commands.download.server.success"));
-    } catch (error) {
-        console.error(error);
-        await interaction.editReply(t(c.lang, "commands.download.server.dmsClosed"));
-    }
 }

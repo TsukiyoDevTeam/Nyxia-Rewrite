@@ -8,6 +8,6 @@ export default {
 
 	async init(client) {
 		Logger.info("Bot", "Ready!");
-		client.emit("cron-botStats", client)
+		//client.emit("cron-botStats", client)
 	},
 };

@@ -3,6 +3,8 @@
     "download": {
       "user": {
         "success": "Please check your private messages from me for your information!",
+        "error": "An error occurred while trying to collect data. Please try again later.",
+        "processing": "Collecting data please wait. This could take a few minutes...",
         "dmsClosed": "Your private messages are closed, please ensure you allow messages from server members and try again!",
         "embed": {
           "title": "🗃️ Your Data",
@@ -10,6 +12,8 @@
         }
       }, 
       "server": {
+        "processing": "Collecting data please wait. This could take a few minutes...",
+        "error": "An error occurred while trying to collect data. Please try again later.",
         "notOwner": "You must be the owner of the server to use this!",
         "success": "Please check your private messages from me for your information!",
         "dmsClosed": "Your private messages are closed, please ensure you allow messages from server members and try again!",

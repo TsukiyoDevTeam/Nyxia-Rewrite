@@ -39,6 +39,7 @@ export default {
 		try {
 			await command.init(interaction, client, configs.config, t);
 		} catch (error) {
+			console.log(error)
 			const replyOptions = { content: t(configs.config.lang, "errors.normal") + "\n>>> " + error.message, ephemeral: false };
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp(replyOptions);

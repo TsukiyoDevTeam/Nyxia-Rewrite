@@ -21,10 +21,10 @@ export default {
         try {
             if (interaction.options.getSubcommand() === 'user') {
                 const command = await import("../commands/download/user.js");
-                return command.default(client, interaction, t);
+                return command.default(client, interaction, t, c);
             } else if (interaction.options.getSubcommand() === 'server') {
                 const command = await import("../commands/download/server.js");
-                return command.default(client, interaction, t);
+                return command.default(client, interaction, t, c);
             }
         } catch (error) {
             console.error('Error loading subcommand:', error);
