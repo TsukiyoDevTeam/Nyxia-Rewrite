@@ -69,7 +69,7 @@ async function start() {
     await client.login(process.env.BOT_TOKEN);
 
     const endTime = Date.now();
-    Logger.info("Init", `Completed in ${(endTime - startTime) / 1000}s`.green);
+    Logger.info("Init", 'Completed in ' +`${(endTime - startTime) / 1000}s`.green);
 }
 
 start();

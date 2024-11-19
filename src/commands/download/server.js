@@ -1,12 +1,14 @@
+import { EmbedBuilder } from "discord.js";
+import guildModel from "../../models/guild.js";
+
 export default async (client, interaction, t) => {
     let fileName, model, field, value;
-    model = [userModel];
-    field = 'user';
+    model = [guildModel];
     value = interaction.user.id;
-    fileName = interaction.user.id;
+    fileName = "server-" + interaction.guild.id;
 
-    async function downloadData(model, field, value) {
-        const documents = await model.find({ [field]: value }).exec();
+    async function downloadData(model, value) {
+        const documents = await model.find({ guild: value }).exec();
         return { [model.modelName]: documents };
     }
 
@@ -23,12 +25,17 @@ export default async (client, interaction, t) => {
         });
     }
 
-    const data = await downloadData(model, field, value);
+    const data = await downloadData(model, value);
     const attachment = await createAttachment(data, fileName);
-
-    try { 
+    const embed = new EmbedBuilder()
+        .setTitle(t(c.lang, "commands.download.server.embed.title"))
+        .setDescription(t(c.lang, "commands.download.server.embed.desc"))
+        .setFooter(t(c.lang, "utils.footer"))
+        .setColor(c.colour);
+    try {
         await interaction.user.send({
-            content: 'Here is your data:',
+            content: null,
+            embeds: [embed],
             files: [attachment]
         });
         await interaction.editReply(t(c.lang, "commands.download.server.success"));

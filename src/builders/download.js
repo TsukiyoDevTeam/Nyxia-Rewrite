@@ -15,8 +15,8 @@ export default {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('server')
-                .setDescription('📂 Download server data from the bot')),
-
+                .setDescription('📂 Download server data from the bot'))
+,
     async init(interaction, client, c, t) {
         try {
             if (interaction.options.getSubcommand() === 'user') {

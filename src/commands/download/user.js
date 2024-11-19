@@ -8,7 +8,7 @@ export default async (client, interaction, t) => {
         //confessionsModel,
     ];
     value = interaction.user.id;
-    fileName = interaction.user.id;
+    fileName = "user-" + interaction.user.id;
 
     async function downloadData(models, value) {
         const data = {};

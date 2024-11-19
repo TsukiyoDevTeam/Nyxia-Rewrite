@@ -8,11 +8,15 @@
           "title": "🗃️ Your Data",
           "desc": "> Here is all of your user data that has been collected by the bot. This is confusing to read but this is all the data we have on you. If you would like to partially or completely delete this data, please contact us."
         }
-      },
+      }, 
       "server": {
         "notOwner": "You must be the owner of the server to use this!",
         "success": "Please check your private messages from me for your information!",
-        "dmsClosed": "Your private messages are closed, please ensure you allow messages from server members and try again!"
+        "dmsClosed": "Your private messages are closed, please ensure you allow messages from server members and try again!",
+        "embed": {
+          "title": "🗃️ Your Data",
+          "desc": "> Here is all of your user data that has been collected by the bot. This is confusing to read but this is all the data we have on you. If you would like to partially or completely delete this data, please contact us."
+        }
       }
     }
   },
