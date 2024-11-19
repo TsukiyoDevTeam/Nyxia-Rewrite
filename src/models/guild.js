@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema(
+
+const guildSchema = new mongoose.Schema(
     {
         guild: { type: String, index: true, required: true },
 
@@ -21,4 +22,4 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model('Guild', guildSchema);

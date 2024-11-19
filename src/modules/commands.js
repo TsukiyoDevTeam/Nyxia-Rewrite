@@ -18,7 +18,7 @@ export default async (client) => {
         let errored = 0;
         const commands = [];
         const devCommands = [];
-        const commandsPath = path.join(__dirname, '../commands');
+        const commandsPath = path.join(__dirname, '../builders');
         const readCommandFiles = (dirPath) => {
             return fs.readdirSync(dirPath).reduce((files, file) => {
                 const filePath = path.join(dirPath, file);
@@ -55,6 +55,7 @@ export default async (client) => {
                     throw new Error('Command is not set up correctly');
                 }
             } catch (error) {
+                console.error(error);
                 const location = filePath.replace(commandsPath, '').replace(/\\/g, ' > ').replace(/^ > /, '');
                 Logger.warn('Cmd Loader', `"${location}" isn't setup correctly`.red);
                 errored++;
@@ -86,7 +87,7 @@ export default async (client) => {
             process.exit(1);
         }
     } catch (error) {
-        Logger.error('Cmd Loader', error.message);
+        Logger.error('Cmd Loader', error.message, error);
         process.exit(1);
     }
 };

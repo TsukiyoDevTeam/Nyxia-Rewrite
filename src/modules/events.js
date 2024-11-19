@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath, pathToFileURL } from 'url';
 import Logger from "../utils/Logger.js";
-import t from "../utils/Translator.js";
 import 'colors';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -42,9 +41,9 @@ export default async (client) => {
 
                 count++;
                 if (event.default.once) {
-                    client.once(event.default.name, (...args) => event.default.init(t, client, ...args));
+                    client.once(event.default.name, (...args) => event.default.init(client, ...args));
                 } else {
-                    client.on(event.default.name, (...args) => event.default.init(t, client, ...args));
+                    client.on(event.default.name, (...args) => event.default.init(client, ...args));
                 }
             } catch (error) {
                 Logger.error("Event Loader", `${error.message}`.red, error);

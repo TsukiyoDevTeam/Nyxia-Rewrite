@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
         user: { type: String, index: true, required: true },
 
         flags: {
-            isBannedFrom: { type: [String], default: [] }
+            isBannedFrom: { type: [Object], default: [] }
         },
 
         badges: { type: [String], default: [] },
