@@ -2,13 +2,14 @@ import { SlashCommandBuilder } from 'discord.js';
 import { handleCmd } from "../utils/functions.js";
 
 export default {
-    dev: false,
+    dev: true,
     owner: false,
-    category: "AFK",
+    category: "Developer",
 
     data: new SlashCommandBuilder()
-        .setName('afk')
+        .setName('devs')
         .setDescription('💤 Interact with the AFK system')
+
         .addSubcommand(subcommand =>
             subcommand
                 .setName('set')
@@ -20,18 +21,13 @@ export default {
                         .setDescription('💤 The reason you are AFK')
                         .setRequired(true)
                 )
-                .addBooleanOption(option =>
+                .addStringOption(option =>
                     option
-                        .setName('global')
-                        .setDescription('💤 Set your AFK globally')
+                        .setName('')
+                        .setDescription('🛠️ ')
                         .setRequired(false)
                 )
-        )
-        .addSubcommand(subcommand =>
-            subcommand
-                .setName('list')
-                .setDescription('💤 List all AFK users in the server')
-        )
+            )
 ,
     async init(interaction, client, c, t) {
         try {
