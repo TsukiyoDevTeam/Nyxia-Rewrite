@@ -1,15 +1,16 @@
-import Logger from "../utils/Logger.js";
+import Logger from "../utils/logger.js";
 import "colors";
 
 export default async () => {
     process.on("unhandledRejection", (reason, promise) => {
         console.log(" ");
+        console.log(reason)
         Logger.error("Unhandled Rejection", reason.toString().red, reason);
     });
 
     process.on("uncaughtException", async (err, origin) => {
-        await Logger.error("Uncaught Exception", `Error: ${err.toString().red}`, err);
         console.log(err);
+        await Logger.error("Uncaught Exception", `Error: ${err.toString().red}`, err);
         if (origin) {
             await Logger.info("Exception Origin", origin);
         }

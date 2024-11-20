@@ -1,0 +1,1 @@
+Language files have been moved to src/assets

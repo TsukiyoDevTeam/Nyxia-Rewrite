@@ -1,5 +1,5 @@
 import userModel from "../../models/user.js";
-import t from "../../utils/Translator.js";
+import t from "../../utils/translator.js";
 import Discord from "discord.js";
 
 export default {

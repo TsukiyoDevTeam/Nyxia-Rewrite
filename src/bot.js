@@ -4,9 +4,9 @@ import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import Logger from './utils/Logger.js';
+import Logger from './utils/logger.js';
 import model from "./models/user.js";
-import t from './utils/Translator.js';
+import t from './utils/translator.js';
 
 dotenv.config();
 
@@ -43,9 +43,8 @@ async function loadModules() {
     }
     const moduleFiles = await getAllFiles(path.join(__dirname, 'modules'));
     for (const file of moduleFiles) {
-        if (file.endsWith('.js') && !path.basename(file).startsWith('_') && !['database.js'].includes(path.basename(file))) {
+        if (file.endsWith('.js') && !path.basename(file).startsWith('_') && !['database.js', 'functions.js'].includes(path.basename(file))) {
             const module = await import(`file://${file}`);
-            client.inits = true;
             await module.default(client, t);
         }
     }

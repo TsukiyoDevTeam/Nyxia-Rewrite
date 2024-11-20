@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import Logger from '../utils/Logger.js';
+import Logger from '../utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,7 +32,7 @@ const ensureIdenticalStructure = (enData, langData) => {
 };
 
 const copyLangFiles = async () => {
-    const langsDir = path.join(__dirname, '../utils/language');
+    const langsDir = path.join(__dirname, '../assets/language');
     const enFile = path.join(langsDir, 'english.json');
 
     let enData;
@@ -65,7 +65,7 @@ const copyLangFiles = async () => {
 };
 
 const loadLanguageData = async () => {
-    const langsDir = path.join(__dirname, '../utils/language');
+    const langsDir = path.join(__dirname, '../assets/language');
     const enFile = path.join(langsDir, 'english.json');
 
     try {

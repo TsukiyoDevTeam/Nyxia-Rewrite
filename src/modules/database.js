@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Logger from "../utils/Logger.js";
+import Logger from "../utils/logger.js";
 import model from "../models/user.js";
 
 export default async () => {

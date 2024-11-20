@@ -1,4 +1,4 @@
-import Logger from "../utils/Logger.js";
+import Logger from "./logger.js";
 import loadLanguageData from "../modules/language.js";
 
 const langCache = {};
@@ -9,6 +9,7 @@ const langCache = {};
         Object.assign(langCache, langs);
         Logger.info("Translator", "Language data preloaded successfully");
     } catch (error) {
+        console.log(error);
         Logger.error("Translator", "Failed to preload language data", error);
     }
 })();

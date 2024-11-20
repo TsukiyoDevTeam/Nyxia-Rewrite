@@ -20,8 +20,7 @@ export default {
     async init(interaction, client, c, t) {
         try {
             if (interaction.options.getSubcommand() === 'user') {
-                const command = await import("../commands/download/user.js");
-                return command.default(client, interaction, t, c);
+
             } else if (interaction.options.getSubcommand() === 'server') {
                 const command = await import("../commands/download/server.js");
                 return command.default(client, interaction, t, c);

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Discord from 'discord.js';
-import Logger from "../utils/Logger.js";
+import Logger from "../utils/logger.js";
 import 'colors';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +18,7 @@ export default async (client) => {
         let errored = 0;
         const commands = [];
         const devCommands = [];
-        const commandsPath = path.join(__dirname, '../builders');
+        const commandsPath = path.join(__dirname, '../build');
         const readCommandFiles = (dirPath) => {
             return fs.readdirSync(dirPath).reduce((files, file) => {
                 const filePath = path.join(dirPath, file);

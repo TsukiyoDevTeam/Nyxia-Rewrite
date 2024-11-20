@@ -42,7 +42,7 @@ export default async (client, interaction, t, c) => {
             files: [attachment]
         });
     } catch (error) {
-        await interaction.editReply(t(c.lang, "commands.download.user.error"));
+        await interaction.editReply(t(c.lang, "commands.download.user.dmsClosed"));
         return;
     }
     await interaction.editReply(t(c.lang, "commands.download.user.success"));
