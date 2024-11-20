@@ -1,5 +1,5 @@
 import { EmbedBuilder, AttachmentBuilder } from "discord.js";
-import guildModel from "../../models/guild.js";
+import guildModel from "../../../models/guild.js";
 
 export default async (client, interaction, t, c) => {
     let fileName, model, field, value;

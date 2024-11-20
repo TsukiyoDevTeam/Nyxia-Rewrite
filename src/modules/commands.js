@@ -18,18 +18,13 @@ export default async (client) => {
         let errored = 0;
         const commands = [];
         const devCommands = [];
-        const commandsPath = path.join(__dirname, '../build');
+        const commandsPath = path.join(__dirname, "..", "commands");
         const readCommandFiles = (dirPath) => {
-            return fs.readdirSync(dirPath).reduce((files, file) => {
-                const filePath = path.join(dirPath, file);
-                const stat = fs.statSync(filePath);
-                if (stat.isDirectory()) {
-                    return files.concat(readCommandFiles(filePath));
-                } else if (file.endsWith('.js') && !file.startsWith('_')) {
-                    return files.concat(filePath);
-                }
-                return files;
-            }, []);
+            return fs.readdirSync(dirPath).filter(file => {
+            const filePath = path.join(dirPath, file);
+            const stat = fs.statSync(filePath);
+            return stat.isFile() && file.endsWith('.js') && !file.startsWith('_');
+            }).map(file => path.join(dirPath, file));
         };
 
         const commandFiles = readCommandFiles(commandsPath);

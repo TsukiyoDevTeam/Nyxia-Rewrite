@@ -18,7 +18,7 @@ export default class Logger {
     }
 
     static async debug(title, message) {
-        if (!process.env.debug || process.env.debug !== "yes") return;
+        if (!process.env.debug || process.env.debug !== "yes" || process.env.debug !== "true") return;
 
         console.log(`[Debug - ${title}]`.bold.magenta + " -> ".grey + `${message}`.bold.magenta);
         return Promise.resolve();

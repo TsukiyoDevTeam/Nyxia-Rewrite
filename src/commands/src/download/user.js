@@ -1,5 +1,5 @@
 import { EmbedBuilder, AttachmentBuilder } from "discord.js";
-import userModel from "../../models/user.js";
+import userModel from "../../../models/user.js";
 
 export default async (client, interaction, t, c) => {
     let fileName, models, value;
