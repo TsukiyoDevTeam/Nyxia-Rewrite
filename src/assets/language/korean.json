@@ -1,5 +1,12 @@
 {
   "commands": {
+    "afk": {
+      "set": {
+        "success": "You are now AFK!\n\n**Reason:** {reason}",
+        "duplicate": "You are now AFK!\n\n**Old** {old_reason}\n**New** {new_reason}",
+        "error": "An error occurred while trying to set your AFK status. Please try again later."
+      }
+    },
     "download": {
       "user": {
         "success": "Please check your private messages from me for your information!",
