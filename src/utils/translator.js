@@ -19,6 +19,13 @@ function getValueFromLangData(langData, key) {
     return result !== null ? result.toString() : null;
 }
 
+/**
+ * Translates a given key based on the specified language.
+ *
+ * @param {string} lang - The language code to translate to.
+ * @param {string} key - The key to be translated.
+ * @returns {string|null} The translated value or null if the language data is not found.
+ */
 export default function t(lang, key) {
     if (!langCache[lang]) {
         Logger.warn("Translator", `Language data for ${lang} not found`);

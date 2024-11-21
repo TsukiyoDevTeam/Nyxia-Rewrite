@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { handleCmd } from "../utils/functions.js";
+import t from "../utils/translator.js";
 
 export default {
     dev: false,
@@ -33,7 +34,7 @@ export default {
                 .setDescription('💤 List all AFK users in the server')
         )
 ,
-    async init(interaction, client, c, t) {
+    async init(interaction, client, c) {
         try {
             await handleCmd(client, interaction, c);
             return;

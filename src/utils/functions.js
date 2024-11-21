@@ -3,7 +3,7 @@ import Logger from "./logger.js";
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Discord from "discord.js";
-import "colors"
+import "colors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,10 +11,11 @@ const __dirname = path.dirname(__filename);
 /**
  * Handles a command interaction.
  *
- * @param {Object} client - The client instance.
- * @param {Object} interaction - The interaction object.
- * @param {Object} config - The configuration settings.
- * @returns {Promise<void>} A promise that resolves when the command is handled.
+ * @param {Discord.Client} client - The client instance.
+ * @param {Discord.ChatInputCommandInteraction} interaction - The interaction object.
+ * @param {object} config - The configuration settings.
+ * @example
+ * handleCmd(client, interaction, config);
  */
 export const handleCmd = async (client, interaction, config) => {
     const x = interaction.commandName;
@@ -30,107 +31,70 @@ export const handleCmd = async (client, interaction, config) => {
     return cmd.default(client, interaction, t, config);
 }
 
+/**
+ * Creates a paginated leaderboard embed with navigation buttons. This also handles the final reply of the interaction.
+ *
+ * @param {string} title - The title of the leaderboard
+ * @param {Array<string>} lb - The leaderboard data as an array of strings
+ * @param {Discord.Message | Discord.Interaction} interaction - The interaction or message that triggered the leaderboard creation
+ * @param {object} config - Configuration object
+ * 
+ */
 export const createLeaderboard = async (title, lb, interaction, config) => {
-    const generateEmbed = async (start, end, lb, title, interaction) => {
-        const current = lb.slice(start, end + 10);
-        const result = current.join("\n");
-
-        let embed = new Discord.EmbedBuilder()
-            .setTitle(`${title}`)
-            .setDescription(`${result.toString()}`)
+    const generateEmbed = async (start, lb, title) => {
+        const current = lb.slice(start, start + 10).join("\n");
+        return new Discord.EmbedBuilder()
+            .setTitle(title)
+            .setDescription(current)
             .setColor(config.colour);
-
-        return embed;
     };
 
     const isMessage = interaction instanceof Discord.Message;
-
     const replyOptions = {
-        embeds: [await generateEmbed(0, 0, lb, title, interaction)],
+        embeds: [await generateEmbed(0, lb, title)],
         fetchReply: true,
     };
 
-    let msg;
-    if (isMessage) {
-        msg = await interaction.reply(replyOptions);
-    } else {
-        if (interaction.deferred || interaction.replied) {
-            msg = await interaction.editReply(replyOptions);
-        } else {
-            msg = await interaction.reply(replyOptions);
-        }
-    }
+    let msg = isMessage ? await interaction.reply(replyOptions) : (interaction.deferred || interaction.replied) ? await interaction.editReply(replyOptions) : await interaction.reply(replyOptions);
 
     if (lb.length <= 10) return;
 
-    const button1 = new Discord.ButtonBuilder()
-        .setCustomId("back_button")
-        .setEmoji("⬅️")
-        .setStyle(Discord.ButtonStyle.Secondary)
-        .setDisabled(true);
+    const createButton = (id, label, disabled = false) => new Discord.ButtonBuilder().setCustomId(id).setLabel(label).setStyle(Discord.ButtonStyle.Secondary).setDisabled(disabled);
 
-    const button2 = new Discord.ButtonBuilder()
-        .setCustomId("forward_button")
-        .setEmoji("➡️")
-        .setStyle(Discord.ButtonStyle.Secondary);
+    const row = new Discord.ActionRowBuilder().addComponents(
+        createButton("back_button", "prev", true),
+        createButton("page_info", `1/${Math.ceil(lb.length / 10)}`, true),
+        createButton("forward_button", "next")
+    );
 
-    const row = new Discord.ActionRowBuilder().addComponents(button1, button2);
-
-    await msg.edit({
-        embeds: [await generateEmbed(0, 0, lb, title, interaction)],
-        components: [row],
-    });
+    await msg.edit({ embeds: [await generateEmbed(0, lb, title)], components: [row] });
 
     let currentIndex = 0;
-    const collector = msg.createMessageComponentCollector({
-        componentType: Discord.ComponentType.Button,
-        time: 60000,
-    });
+    const collector = msg.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 60000 });
 
     collector.on("collect", async (btn) => {
         if (btn.user.id === (isMessage ? interaction.author.id : interaction.user.id)) {
-            btn.customId === "back_button" ? (currentIndex -= 10) : (currentIndex += 10);
+            currentIndex += btn.customId === "back_button" ? -10 : 10;
 
-            const btn1 = new Discord.ButtonBuilder()
-                .setCustomId("back_button")
-                .setEmoji("⬅️")
-                .setStyle(Discord.ButtonStyle.Secondary)
-                .setDisabled(currentIndex === 0);
+            const row2 = new Discord.ActionRowBuilder().addComponents(
+                createButton("back_button", "prev", currentIndex === 0),
+                createButton("page_info", `${Math.floor(currentIndex / 10) + 1}/${Math.ceil(lb.length / 10)}`, true),
+                createButton("forward_button", "next", currentIndex + 10 >= lb.length)
+            );
 
-            const btn2 = new Discord.ButtonBuilder()
-                .setCustomId("forward_button")
-                .setEmoji("➡️")
-                .setStyle(Discord.ButtonStyle.Secondary)
-                .setDisabled(currentIndex + 10 >= lb.length);
-
-            const row2 = new Discord.ActionRowBuilder().addComponents(btn1, btn2);
-
-            await msg.edit({
-                embeds: [await generateEmbed(currentIndex, currentIndex, lb, title, interaction)],
-                components: [row2],
-            });
+            await msg.edit({ embeds: [await generateEmbed(currentIndex, lb, title)], components: [row2] });
             await btn.deferUpdate();
+            collector.resetTimer();
         }
     });
 
     collector.on("end", async () => {
-        const btn1Disable = new Discord.ButtonBuilder()
-            .setCustomId("back_button")
-            .setEmoji("⬅️")
-            .setStyle(Discord.ButtonStyle.Secondary)
-            .setDisabled(true);
+        const rowDisable = new Discord.ActionRowBuilder().addComponents(
+            createButton("back_button", "prev", true),
+            createButton("page_info", `${Math.floor(currentIndex / 10) + 1}/${Math.ceil(lb.length / 10)}`, true),
+            createButton("forward_button", "next", true)
+        );
 
-        const btn2Disable = new Discord.ButtonBuilder()
-            .setCustomId("forward_button")
-            .setEmoji("➡️")
-            .setStyle(Discord.ButtonStyle.Secondary)
-            .setDisabled(true);
-
-        const rowDisable = new Discord.ActionRowBuilder().addComponents(btn1Disable, btn2Disable);
-
-        await msg.edit({
-            embeds: [await generateEmbed(currentIndex, currentIndex, lb, title, interaction)],
-            components: [rowDisable],
-        });
+        await msg.edit({ embeds: [await generateEmbed(currentIndex, lb, title)], components: [rowDisable] });
     });
 };
