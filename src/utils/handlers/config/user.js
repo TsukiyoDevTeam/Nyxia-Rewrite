@@ -1,6 +1,7 @@
 import Discord from "discord.js";
-import { footer } from "../../functions.js";
+import { createLeaderboard, footer } from "../../functions.js";
 import user from "../../../models/user.js";
+import { config } from "dotenv";
 
 export default async (client, interaction, config, btnInt) => {
     await btnInt.deferUpdate();
@@ -60,8 +61,8 @@ export default async (client, interaction, config, btnInt) => {
             interaction.editReply({ components: [] }).catch(() => {});
         } catch {}
     });
-};
 
+//----------------------------------------------
 async function handleView(interaction, config, embed, row, backBtn) {
     let fields = [];
     let count = 0;
@@ -119,10 +120,26 @@ async function handleView(interaction, config, embed, row, backBtn) {
     });
 }
 
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 async function handleEdit(i) {
-    await i.reply({ content: "soon", ephemeral: true }).catch(() => {});
-
-    /*
+    if (i.user.id !== interaction.user.id) {
+        return i.reply({ content: "This is not yours", ephemeral: true });
+    }
+    let data = await user.findOne({ user: interaction.user.id });
+    if (!data) {
+        const newData = new user({
+            user: interaction.user.id,
+        });
+        await newData.save();
+        data = await user.findOne({ user: interaction.user.id });
+    }
+     
+    const list = Object.entries(data.config).map(([key, value]) => `> **${key}:** ${value}`);
+    await i.deferUpdate();
+    await createLeaderboard("Current configurations", list, interaction, config, 5);
+}
+};
+/*
     const backCollector = msgx.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 30000 });
 
     backCollector.on('collect', async i => {
@@ -151,5 +168,4 @@ async function handleEdit(i) {
 
         return interaction.editReply({ embeds: [defaultEmbed], components: [defaultRow] });
     });
-    */
-}
+*/
