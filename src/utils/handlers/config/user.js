@@ -1,5 +1,6 @@
 import Discord from "discord.js";
 import { footer } from "../../functions.js";
+import user from "../../../models/user.js";
 
 export default async (client, interaction, config, btnInt) => {
     await btnInt.deferUpdate();
@@ -26,11 +27,17 @@ export default async (client, interaction, config, btnInt) => {
                 )
         );
 
+    const backBtn = new Discord.ActionRowBuilder()
+        .addComponents(
+            new Discord.ButtonBuilder()
+                .setLabel('Back')
+                .setCustomId('backBtn')
+                .setStyle(Discord.ButtonStyle.Secondary)
+        );
+
     const panelMsg = await interaction.editReply({ embeds: [embed], components: [row] });
 
     const menuCollector = panelMsg.createMessageComponentCollector({ componentType: Discord.ComponentType.StringSelect, time: 30000 });
-
-// ------------------------------------------------------------
 
     menuCollector.on('collect', async i => {
         if (i.user.id !== interaction.user.id) {
@@ -41,7 +48,7 @@ export default async (client, interaction, config, btnInt) => {
         menuCollector.resetTimer();
 
         if (i.values[0] === "view") {
-            await handleView(interaction, config, embed, row);
+            await handleView(interaction, config, embed, row, backBtn);
             await i.deferUpdate();
         } else if (i.values[0] === "edit") {
             await handleEdit(i);
@@ -55,12 +62,10 @@ export default async (client, interaction, config, btnInt) => {
     });
 };
 
-// ------------------------------------------------------------
-
-async function handleView(interaction, config, embed, row) {
+async function handleView(interaction, config, embed, row, backBtn) {
     let fields = [];
     let count = 0;
-    let field = { name: '\u200B', value: '', inline: true };
+    let field = { name: '----------', value: '', inline: true };
 
     for (const [x, y] of Object.entries(config)) {
         field.value += `**${x}**: ${y}\n`;
@@ -78,9 +83,73 @@ async function handleView(interaction, config, embed, row) {
     }
 
     embed.setFields(fields);
-    await interaction.editReply({ embeds: [embed], components: [row] });
+    embed.setDescription("> Here is your current configurations down below!");
+    const msgx = await interaction.editReply({ embeds: [embed], components: [row, backBtn] });
+    const backCollector = msgx.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 30000 });
+
+    backCollector.on('collect', async i => {
+        const defaultEmbed = new Discord.EmbedBuilder()
+            .setTitle("⚙️ User Configuration")
+            .setDescription(">>> Welcome to your user settings! Please use the menu below to navigate!")
+            .setColor(config.colour)
+            .setFooter(footer());
+
+        const defaultRow = new Discord.ActionRowBuilder()
+            .addComponents(
+                new Discord.StringSelectMenuBuilder()
+                    .setCustomId('settings')
+                    .setPlaceholder('Select a setting')
+                    .addOptions(
+                        new Discord.StringSelectMenuOptionBuilder()
+                            .setLabel('View current configs')
+                            .setDescription('View your current configs!')
+                            .setValue('view'),
+                        new Discord.StringSelectMenuOptionBuilder()
+                            .setLabel('Edit current configs')
+                            .setDescription('Edit your current configs!')
+                            .setValue('edit')
+                    )
+            );
+
+        await interaction.editReply({ embeds: [defaultEmbed], components: [defaultRow] });
+        try {
+            await i.deferUpdate();
+            return;
+        } catch { return; }
+    });
 }
 
 async function handleEdit(i) {
     await i.reply({ content: "soon", ephemeral: true }).catch(() => {});
+
+    /*
+    const backCollector = msgx.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 30000 });
+
+    backCollector.on('collect', async i => {
+        const defaultEmbed = new Discord.EmbedBuilder()
+            .setTitle("⚙️ User Configuration")
+            .setDescription(">>> Welcome to your user settings! Please use the menu below to navigate!")
+            .setColor(config.colour)
+            .setFooter(footer());
+
+        const defaultRow = new Discord.ActionRowBuilder()
+            .addComponents(
+                new Discord.StringSelectMenuBuilder()
+                    .setCustomId('settings')
+                    .setPlaceholder('Select a setting')
+                    .addOptions(
+                        new Discord.StringSelectMenuOptionBuilder()
+                            .setLabel('View current configs')
+                            .setDescription('View your current configs!')
+                            .setValue('view'),
+                        new Discord.StringSelectMenuOptionBuilder()
+                            .setLabel('Edit current configs')
+                            .setDescription('Edit your current configs!')
+                            .setValue('edit')
+                    )
+            );
+
+        return interaction.editReply({ embeds: [defaultEmbed], components: [defaultRow] });
+    });
+    */
 }

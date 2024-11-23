@@ -32,6 +32,7 @@ export default {
                 .setName('list')
                 .setDescription('💤 List all AFK users in the server')
         )
+        
 ,
     async init(interaction, client, c) {
         try {
