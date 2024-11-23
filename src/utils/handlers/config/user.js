@@ -136,7 +136,7 @@ async function handleEdit(i) {
      
     const list = Object.entries(data.config).map(([key, value]) => `> **${key}:** ${value}`);
     await i.deferUpdate();
-    await createLeaderboard("Current configurations", list, interaction, config, 5);
+    await createLeaderboard("Current configurations", list, interaction, config, 5, backBtn);
 }
 };
 /*

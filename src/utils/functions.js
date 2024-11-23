@@ -38,8 +38,9 @@ export const handleCmd = async (client, interaction, config) => {
  * @param {string[]} txt - The leaderboard data as an array of strings.
  * @param {Discord.Interaction|Discord.Message} interaction - The interaction or message that triggered the leaderboard creation.
  * @param {Object} config - Configuration object containing settings like color.
- * @param {boolean} [single=false] - Whether to display a single item per page.
- * @param {number} [pageCount=10] - Number of items to display per page.
+ * @param {boolean} [single=false] - (optional) Whether to display a single item per page.
+ * @param {number} [pageCount=10] - (optional) Number of items to display per page.
+ * @param {Discord.ActionRowBuilder} extra_components - (optional) Extra components to add to
  * @returns {Promise<void>} A promise that resolves when the leaderboard is created.
  * @example
  * ```js
@@ -47,7 +48,7 @@ export const handleCmd = async (client, interaction, config) => {
  * return await createLeaderboard("List", array, interaction, config, 1)
  * ```
  */
-export const createLeaderboard = async (title, txt, interaction, config, pageCount = 10) => {
+export const createLeaderboard = async (title, txt, interaction, config, pageCount = 10, extra_components = null) => {
     let lb;
     let failed = false;
     let single = false;
@@ -88,7 +89,7 @@ export const createLeaderboard = async (title, txt, interaction, config, pageCou
         createButton("forward_button", "next", lb.length <= pageCount)
     );
 
-    let msg = isMessage ? await interaction.reply({ ...replyOptions, components: [row] }) : (interaction.deferred || interaction.replied) ? await interaction.editReply({ ...replyOptions, components: [row] }) : await interaction.reply({ ...replyOptions, components: [row] });
+    let msg = isMessage ? await interaction.reply({ ...replyOptions, components: extra_components ? [row, extra_components] : [row] }) : (interaction.deferred || interaction.replied) ? await interaction.editReply({ ...replyOptions, components: extra_components ? [row, extra_components] : [row] }) : await interaction.reply({ ...replyOptions, components: extra_components ? [row, extra_components] : [row] });
 
     // safeguard
     if (failed) return;
@@ -97,6 +98,13 @@ export const createLeaderboard = async (title, txt, interaction, config, pageCou
     const collector = msg.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 60000 });
 
     collector.on("collect", async (btn) => {
+
+        // --------------------------------------------------------------------------------------------
+        //                               safeguard from extra components
+        // --------------------------------------------------------------------------------------------
+    if (btn.customId !== 'back_button' && btn.customId !== 'page_info' && btn.customId !== 'forward_button') return;
+        // --------------------------------------------------------------------------------------------
+
         if (btn.user.id === (isMessage ? interaction.author.id : interaction.user.id)) {
             if (btn.customId === "page_info") {
                 const modal = new Discord.ModalBuilder()
@@ -129,7 +137,7 @@ export const createLeaderboard = async (title, txt, interaction, config, pageCou
                         );
 
                         await Promise.all([
-                            msg.edit({ embeds: [await generateEmbed(currentIndex, lb, title)], components: [row2] }),
+                            msg.edit({ embeds: [await generateEmbed(currentIndex, lb, title)], components: extra_components ? [row2, extra_components] : [row2] }),
                             modalSubmit.deferUpdate()
                         ]);
                         collector.resetTimer();
@@ -145,7 +153,7 @@ export const createLeaderboard = async (title, txt, interaction, config, pageCou
                 );
 
                 await Promise.all([
-                    msg.edit({ embeds: [await generateEmbed(currentIndex, lb, title)], components: [row2] }),
+                    msg.edit({ embeds: [await generateEmbed(currentIndex, lb, title)], components: extra_components ? [row2, extra_components] : [row2] }),
                     btn.deferUpdate()
                 ]);
                 collector.resetTimer();
@@ -161,7 +169,7 @@ export const createLeaderboard = async (title, txt, interaction, config, pageCou
             createButton("expired_button", "This component has expired!", true),
         );
 
-        await msg.edit({ components: [rowDisable] });
+        await msg.edit({ components: extra_components ? [rowDisable, extra_components] : [rowDisable] });
     });
 };
 
