@@ -31,7 +31,6 @@ export default async (client) => {
         for (const filePath of eventFiles) {
             try {
                 const event = await import(pathToFileURL(filePath).href);
-
                 if (!event.default || !event.default.name || !event.default.init) {
                     const location = filePath.replace(eventsPath, "").replace(/\\/g, " > ").replace(/^ > /, "");
                     Logger.warn("Event Loader", `"${location}" isn't setup correctly`.red);

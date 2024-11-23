@@ -14,16 +14,14 @@ export default async (client) => {
         client.commands = new Discord.Collection();
 
         let count = 0;
-        let devCount = 0;
         let errored = 0;
         const commands = [];
-        const devCommands = [];
         const commandsPath = path.join(__dirname, "..", "commands");
         const readCommandFiles = (dirPath) => {
             return fs.readdirSync(dirPath).filter(file => {
-            const filePath = path.join(dirPath, file);
-            const stat = fs.statSync(filePath);
-            return stat.isFile() && file.endsWith('.js') && !file.startsWith('_');
+                const filePath = path.join(dirPath, file);
+                const stat = fs.statSync(filePath);
+                return stat.isFile() && file.endsWith('.js') && !file.startsWith('_');
             }).map(file => path.join(dirPath, file));
         };
 
@@ -38,13 +36,7 @@ export default async (client) => {
                         command.category = "Miscellaneous";
                     }
                     client.commands.set(command.data.name, command);
-
-                    if (command.dev) {
-                        devCommands.push(command.data.toJSON());
-                        devCount++;
-                    } else {
-                        commands.push(command.data.toJSON());
-                    }
+                    commands.push(command.data.toJSON());
                     count++;
                 } else {
                     throw new Error('Command is not set up correctly');
@@ -62,22 +54,22 @@ export default async (client) => {
         const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
 
         try {
-            if (devCount > 0) {
-                await rest.put(
-                    Routes.applicationGuildCommands(process.env.BOT_ID, '1125196330646638592'),
-                    { body: devCommands }
-                );
-            }
-
+            //const emptyArray = [];
             if (process.env.production) {
                 await rest.put(
                     Routes.applicationCommands(process.env.BOT_ID),
+                    { body: commands }
+                );
+            } else if (!process.env.production) {
+                await rest.put(
+                    Routes.applicationGuildCommands(process.env.BOT_ID, "1125196330646638592"),
                     { body: commands }
                 );
             }
         return;
 
         } catch (error) {
+            console.log(error)
             Logger.error('Cmd Loader', 'Failed to register', error);
             process.exit(1);
         }

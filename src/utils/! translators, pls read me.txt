@@ -1,2 +1,0 @@
-Language files have been moved to here:
->>> https://github.com/TsukiyoDevTeam/Nyxia-Rewrite/tree/beta/src/assets/language

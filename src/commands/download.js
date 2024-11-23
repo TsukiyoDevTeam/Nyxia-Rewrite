@@ -25,7 +25,7 @@ export default {
             await handleCmd(client, interaction, c);
             return;
         } catch (e) {
-            return interaction.reply(t(c.lang, "errors.normal"))
+            return interaction.reply("something went wrong")
         }
     }
 };

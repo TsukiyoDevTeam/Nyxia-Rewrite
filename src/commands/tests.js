@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from 'discord.js';
 import { handleCmd } from "../utils/functions.js";
 
 export default {
-    dev: true,
+    dev: false,
     owner: false,
     category: "Testing",
 
@@ -14,14 +14,25 @@ export default {
             subcommand
                 .setName('lb')
                 .setDescription('description')
-            )
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('listcmds')
+                .setDescription('description')
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('config')
+                .setDescription('description')
+        )
 ,
-    async init(interaction, client, c, t) {
+    async init(interaction, client, c) {
         try {
             await handleCmd(client, interaction, c);
             return;
         } catch (e) {
-            return interaction.reply(t(c.lang, "errors.normal"))
+            console.log(e)
+            return interaction.reply("something went wrong")
         }
     }
 };

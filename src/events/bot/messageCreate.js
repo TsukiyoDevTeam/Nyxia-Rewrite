@@ -1,14 +1,8 @@
-import t from "../../utils/translator.js";
-
 export default {
-	name: "interactionCreate",
+	name: "messageCreate",
 	once: false,
 
 	async init(client, message) {
-        if (message.bot) return;
-
-        if (!message.guild) {
-            return client.emit("msg-dmHandler", (client, message));
-        }
+        if (!message || message.bot || !message.guild) return;
     }
 }

@@ -1,5 +1,6 @@
 import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import userModel from "../../../models/user.js";
+import { footer } from "../../../utils/functions.js";
 
 export default async (client, interaction, t, c) => {
     let fileName, models, value;
@@ -26,14 +27,14 @@ export default async (client, interaction, t, c) => {
     }
 
     await interaction.deferReply({fetchReply: true});
-    await interaction.editReply(t(c.lang, "commands.download.user.processing"));
+    await interaction.editReply("Fetching data please wait...\n-# Please keep an eye on this message!");
 
     const data = await downloadData(models, value);
     const attachment = await createAttachment(data, fileName);
     const embed = new EmbedBuilder()
-        .setTitle(t(c.lang, "commands.download.user.embed.title"))
-        .setDescription(t(c.lang, "commands.download.user.embed.desc"))
-        .setFooter({text: t(c.lang, "utils.footer")})
+        .setTitle("🗃️ Your User Data")
+        .setDescription("> Here is all of your user data that has been collected by the bot. This is confusing to read but this is all the data we have on you. If you would like to partially or completely delete this data, please contact us.")
+        .setFooter(footer())
         .setColor(c.colour);
     try {
         await interaction.user.send({
@@ -42,8 +43,8 @@ export default async (client, interaction, t, c) => {
             files: [attachment]
         });
     } catch (error) {
-        await interaction.editReply(t(c.lang, "commands.download.user.dmsClosed"));
+        await interaction.editReply("It appears your dms are closed. Please allow messages from server members before trying again!");
         return;
     }
-    await interaction.editReply(t(c.lang, "commands.download.user.success"));
+    await interaction.editReply("Please check your dms for your data!");
 }

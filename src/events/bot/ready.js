@@ -1,5 +1,4 @@
 import Logger from '../../utils/logger.js';
-import t from "../../utils/translator.js";
 import "colors"
 
 export default {

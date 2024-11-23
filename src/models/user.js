@@ -1,23 +1,29 @@
 import mongoose from 'mongoose';
 
+const banSchema = new mongoose.Schema(
+    {
+        cmd: { type: "String", required: true },
+        reason: { type: String, default: "No reason provided", required: true },
+        appealable: { type: Boolean, default: true, required: true }
+    }
+)
+
 const userSchema = new mongoose.Schema(
     {
         user: { type: String, index: true, required: true },
 
         flags: {
-            isBannedFrom: { type: [Object], default: [] }
+            isBannedFrom: [banSchema]
         },
 
         badges: { type: [String], default: [] },
 
         afk: {
             message: { type: String, default: null },
-            time: { type: Date, default: null },
-            global: { type: Boolean, default: false }
+            time: { type: Date, default: null }
         },
 
         config: {
-            lang: { type: String, default: "english" },
             colour: { type: String, default: "#f3b3d3" }
         }
     }

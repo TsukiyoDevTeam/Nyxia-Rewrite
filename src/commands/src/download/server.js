@@ -1,5 +1,6 @@
 import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import guildModel from "../../../models/guild.js";
+import { footer } from "../../../utils/functions.js";
 
 export default async (client, interaction, t, c) => {
     let fileName, model, field, value;
@@ -24,20 +25,20 @@ export default async (client, interaction, t, c) => {
 
     if (interaction.guild.ownerId !== interaction.user.id) {
         return interaction.reply({
-            content: t(c.lang, "commands.download.server.notOwner"),
+            content: "You must be the owner of the server to download this data",
             ephemeral: true
         });
     }
 
     await interaction.deferReply({fetchReply: true});
-    await interaction.editReply(t(c.lang, "commands.download.server.processing"));
+    await interaction.editReply("Fetching data please wait...\n-# Please keep an eye on this message!");
 
     const data = await downloadData(model, value);
     const attachment = await createAttachment(data, fileName);
     const embed = new EmbedBuilder()
-        .setTitle(t(c.lang, "commands.download.server.embed.title"))
-        .setDescription(t(c.lang, "commands.download.server.embed.desc"))
-        .setFooter({text: t(c.lang, "utils.footer")})
+        .setTitle("🗃️ Your Server Data")
+        .setDescription("> Here is all of your server data that has been collected by the bot. This is confusing to read but this is all the data we have on you. If you would like to partially or completely delete this data, please contact us.")
+        .setFooter(footer())
         .setColor(c.colour);
         try {
             await interaction.user.send({
@@ -46,8 +47,8 @@ export default async (client, interaction, t, c) => {
                 files: [attachment]
             });
         } catch (error) {
-            await interaction.editReply(t(c.lang, "commands.download.server.dmsClosed"));
+            await interaction.editReply("I couldn't send you a DM, please make sure your DMs are open.");
             return;
         }
-        await interaction.editReply(t(c.lang, "commands.download.server.success"));
+        await interaction.editReply("I have sent you a DM with the data.");
 }
