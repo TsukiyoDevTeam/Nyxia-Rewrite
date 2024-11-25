@@ -1,9 +1,9 @@
 import { createLeaderboard } from '../../../utils/functions.js';
 
-export default async (client, interaction, t, config) => {
+export default async (client, interaction, config) => {
     try {
         const b = Array.from({ length: 1000 }, (_, i) => i + 1);
-        await createLeaderboard("Numbers list", b, interaction, c, 1);
+        await createLeaderboard("Numbers list", b, interaction, config, 1);
     } catch (e) {
         console.log(e);
     }
