@@ -1,4 +1,5 @@
 import userModel from "../../models/user.js";
+import guildModel from "../../models/guild.js";
 import Discord from "discord.js";
 import { footer } from "../../utils/functions.js";
 
@@ -17,8 +18,11 @@ export default {
 			});
 		}
 
-		const configs = await getUserInfo(interaction.user.id);
-		const userBans = configs?.isBannedFrom || [];
+		const [Uconfigs, Sconfigs] = await Promise.all([
+			getUserInfo(interaction.user.id),
+			getServerInfo(interaction.guildId)
+		]);
+		const userBans = Uconfigs?.isBannedFrom || [];
 
 		if (userBans.some(ban => ban.commandName === interaction.commandName)) {
 			const data = userBans.find(ban => ban.commandName === interaction.commandName);
@@ -30,15 +34,15 @@ export default {
 			return  interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
-		if (await isNotOwner(command, interaction, client, configs)) {
+		if (await isNotOwner(command, interaction, client, Uconfigs)) {
 			return;
 		};
-		if (isNotDev(command, interaction, client, configs)) {
+		if (isNotDev(command, interaction, client, Uconfigs)) {
 			return;
 		};
 
 		try {
-			await command.init(interaction, client, configs.config);
+			await command.init(interaction, client, Uconfigs.config, Sconfigs.general);
 		} catch (error) {
 			console.log(error)
 			const replyOptions = { content: "Something went wrong" + "\n>>> " + error.message, ephemeral: false };
@@ -61,6 +65,17 @@ async function getUserInfo(userId) {
 			await configs.save();
 		}
 		return configs;
+}
+
+async function getServerInfo(guildId) {
+	let config = await guildModel.findOne({ guild: guildId });
+	if (!config || !config.general) {
+		const newConfig = new guildModel({ guild: guildId });
+		await newConfig.save();
+		config = await guildModel.findOne({ guild: guildId });
+		return config
+	}
+	return config;
 }
 
 async function isNotOwner(command, interaction, client, configs) {

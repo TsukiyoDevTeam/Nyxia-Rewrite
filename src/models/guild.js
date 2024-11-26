@@ -11,6 +11,9 @@ const guildSchema = new mongoose.Schema(
         },
 
         config: {
+            general: {
+                main_chat: { type: String, default: null },
+            },
             confess: {
                 channel: { type: String, default: null },
                 logs: {

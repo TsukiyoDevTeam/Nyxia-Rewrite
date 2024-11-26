@@ -3,7 +3,7 @@ import { footer } from "../../../utils/functions.js";
 import path from "node:path";
 import { fileURLToPath } from 'node:url';
 
-export default async (client, interaction, config) => {
+export default async (client, interaction, config, Sconfig) => {
     async function handle(client, interaction, config, type, btnInt) {
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
@@ -47,13 +47,7 @@ export default async (client, interaction, config) => {
                 btnCollector.resetTimer();
                 return i.reply({ content: "You need to be the server owner to configure the server!", ephemeral: true });
             }
-            return handle(client, interaction, config, type, i);
+            return handle(client, interaction, config, type, i, Sconfig);
         }
-    });
-
-    btnCollector.on('end', () => {
-        try {
-            interaction.editReply({ components: [] });
-        } catch {}
     });
 };
