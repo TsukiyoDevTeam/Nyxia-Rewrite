@@ -17,15 +17,11 @@ export default {
 				ephemeral: true,
 			});
 		}
-
-		const [Uconfigs, Sconfigs] = await Promise.all([
-			getUserInfo(interaction.user.id),
-			getServerInfo(interaction.guildId)
-		]);
-		const userBans = Uconfigs?.isBannedFrom || [];
-
-		if (userBans.some(ban => ban.commandName === interaction.commandName)) {
-			const data = userBans.find(ban => ban.commandName === interaction.commandName);
+		
+		const Uconfigs = await getUserInfo(interaction.user.id);
+		const userBans = Uconfigs?.flags?.isBannedFrom ? Uconfigs.flags.isBannedFrom : [];
+		if (userBans.length > 0 && userBans.some(ban => ban.cmd === interaction.commandName)) {
+			const data = userBans.find(ban => ban.cmd === interaction.commandName);
 			const embed = new Discord.EmbedBuilder()
 				.setDescription("Oh no! Looks like you have been banned from this command!\n**Reason:** " + data.reason)
 				.setColor("#f04a41")
@@ -42,7 +38,7 @@ export default {
 		};
 
 		try {
-			await command.init(interaction, client, Uconfigs.config, Sconfigs.general);
+			await command.init(client, interaction);
 		} catch (error) {
 			console.log(error)
 			const replyOptions = { content: "Something went wrong" + "\n>>> " + error.message, ephemeral: false };
@@ -56,29 +52,17 @@ export default {
 };
 
 async function getUserInfo(userId) {
-		let configs = await userModel.findOne({ user: userId });
-		if (!configs) {
-			configs = new userModel({ user: userId, config: {} });
-			await configs.save();
-		} else if (!configs.config) {
-			configs.config = {};
-			await configs.save();
-		}
+	let configs = await userModel.findOne({ user: userId });
+	if (!configs) {
+		configs = new userModel({ user: userId });
+		await configs.save();
+		configs = await userModel.findOne({ user: userId });
 		return configs;
-}
-
-async function getServerInfo(guildId) {
-	let config = await guildModel.findOne({ guild: guildId });
-	if (!config || !config.general) {
-		const newConfig = new guildModel({ guild: guildId });
-		await newConfig.save();
-		config = await guildModel.findOne({ guild: guildId });
-		return config
 	}
-	return config;
+	return configs;
 }
 
-async function isNotOwner(command, interaction, client, configs) {
+async function isNotOwner(command, interaction, client) {
 	if (!command.owner) return false;
 
 	const guild = interaction.guild;

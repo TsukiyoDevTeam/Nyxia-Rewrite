@@ -2,7 +2,9 @@ import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import userModel from "../../../models/user.js";
 import { footer } from "../../../utils/functions.js";
 
-export default async (client, interaction, t, c) => {
+export default async (client, interaction,) => {
+    let c = await userModel.findOne({ user: interaction.user.id }).exec();
+    c = c?.config;
     let fileName, models, value;
     models = [
         userModel,

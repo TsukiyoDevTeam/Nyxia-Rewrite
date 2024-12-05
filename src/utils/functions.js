@@ -17,7 +17,7 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "..", 
  * @example
  * handleCmd(client, interaction, config);
  */
-export const handleCmd = async (client, interaction, config) => {
+export const handleCmd = async (client, interaction, config, ...args) => {
     const x = interaction.commandName;
     const y = interaction.options?.getSubcommand() || null;
     const z = interaction.options?.getSubcommandGroup() || null;
@@ -28,7 +28,7 @@ export const handleCmd = async (client, interaction, config) => {
     else filePath = path.join(filePath, ".js");
 
     const cmd = await import("file://" + filePath);
-    return cmd.default(client, interaction, config);
+    return cmd.default(client, interaction, config, ...args);
 }
 
 /**

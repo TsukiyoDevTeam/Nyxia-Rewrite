@@ -2,16 +2,16 @@ import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import guildModel from "../../../models/guild.js";
 import { footer } from "../../../utils/functions.js";
 
-export default async (client, interaction, t, c) => {
-    let fileName, model, field, value;
+export default async (client, interaction) => {
+    let fileName, model, value;
     model = [guildModel];
-    value = interaction.user.id;
+    value = interaction.guild.id;
     fileName = "server-" + interaction.guild.id;
 
     async function downloadData(models, value) {
         const data = {};
         for (const model of models) {
-            const documents = await model.find({ user: value }).exec();
+            const documents = await model.findOne({ guild: value }).exec();
             data[model.modelName] = documents;
         }
         return data;

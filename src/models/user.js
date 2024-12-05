@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 const banSchema = new mongoose.Schema(
     {
         cmd: { type: "String", required: true },
-        reason: { type: String, default: "No reason provided", required: true },
-        appealable: { type: Boolean, default: true, required: true }
+        reason: { type: String, required: true },
+        appealable: { type: Boolean, required: true }
     }
 )
 
@@ -16,15 +16,15 @@ const userSchema = new mongoose.Schema(
             isBannedFrom: [banSchema]
         },
 
-        badges: { type: [String], default: [] },
+        badges: { type: [String] },
 
         afk: {
-            message: { type: String, default: null },
-            time: { type: Date, default: null }
+            message: { type: String },
+            time: { type: Date }
         },
 
         config: {
-            colour: { type: String, default: "#f3b3d3" }
+            colour: { type: String, default: "#f8bed2" }
         }
     }
 );

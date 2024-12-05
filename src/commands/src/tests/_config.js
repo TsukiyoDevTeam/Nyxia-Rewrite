@@ -4,13 +4,13 @@ import path from "node:path";
 import { fileURLToPath } from 'node:url';
 
 export default async (client, interaction, config, Sconfig) => {
-    async function handle(client, interaction, config, type, btnInt) {
+    async function handle(client, interaction, config, type, btnInt, Sconfig) {
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
 
         const y = path.resolve(__dirname, "../../../utils/handlers/config", `${type}.js`);
         const x = await import("file://" + y);
-        return x.default(client, interaction, config, btnInt);
+        return x.default(client, interaction, config, btnInt, Sconfig);
     }
 
     const mainEmbed = new EmbedBuilder()

@@ -20,12 +20,15 @@ export default {
                 .setDescription('📂 Download server data from the bot')
         )
 ,
-    async init(interaction, client, c, t) {
+    async init(client, interaction) {
         try {
-            await handleCmd(client, interaction, c);
+            await handleCmd(client, interaction);
             return;
         } catch (e) {
-            return interaction.reply("something went wrong")
+            console.log(e);
+            return interaction.reply("something went wrong: " + e.message).catch(e => {
+                return interaction.editReply("something went wrong: " + e.message);
+            });
         }
     }
 };

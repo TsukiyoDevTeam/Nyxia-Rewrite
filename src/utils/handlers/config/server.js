@@ -5,34 +5,36 @@ import guild from "../../../models/guild.js";
 export default async (client, interaction, d, btnInt, Sconfig) => {
     let config
     try {
-    const userData = await guild.findOne({ guild: interaction.guild.id });
-    config = userData.config;
-    } catch {
-        config = Sconfig;
+        if (!Sconfig.general || !Sconfig) {
+        const userData = await guild.findOne({ guild: interaction.guild.id });
+        config = userData.config.general;
+        } else {
+            config = Sconfig.general;
+        }
+    } catch (e) {
+        console.log(e)
+        config = Sconfig.general;
     }
 
     async function configResponse() {
         const userData = await guild.findOne({ guild: interaction.guild.id });
-        const config = userData.config;
+        const config = userData.config.general;
 
-        const list = Object.entries(config).map(([key, value]) => `> **${key}:** ${value}`);
-        const sK = ["main_chat", "main_role"]; // Add your special keys here
-        const modifiedList = list.map(item => {
-            const [key, value] = item.split(": ");
-            const cleanKey = key.replace("> **", "").replace("**", "");
-            console.log(cleanKey);
-            if (sK.includes(cleanKey)) {
-            if (cleanKey === sK[0]) {
-                return `> **Main chat:** <#${value}>`;
-            } else if (cleanKey === sK[1]) {
-                return `> **Main role:** <@&${value}>`;
+        const list = Object.entries(config).map(([key, value]) => {
+            switch (key) {
+                case "main_chat":
+                    return `> **Main chat:** <#${value}>`;
+                case "main_role":
+                    return `> **Main role:** <@&${value}>`;
+                    
+                // Add more cases as needed
+                default:
+                    return `> **${key}:** ${value}`;
             }
-            }
-            return item;
         });
         const embed = new Discord.EmbedBuilder()
         .setTitle("⚙️ Edit Configurations")
-        .setDescription("> Here is your current configurations! Use the menu below to edit each one!\n\n" + modifiedList.join("\n"))
+        .setDescription("> Here is your current configurations! Use the menu below to edit each one!\n\n" + list.join("\n"))
         .setFooter(footer("There will always be more configs as time goes on"))
         .setColor(d.colour);
 
@@ -45,6 +47,12 @@ export default async (client, interaction, d, btnInt, Sconfig) => {
                 .setLabel('Main chat')
                 .setDescription('Your main chat channel')
                 .setValue('main_chat')
+                .setEmoji('<:T_pinkarrow:1256904738239287386>')
+            ,
+            new Discord.StringSelectMenuOptionBuilder()
+                .setLabel('Main role')
+                .setDescription('The role everyone gets')
+                .setValue('main_role')
                 .setEmoji('<:T_pinkarrow:1256904738239287386>')
         )
         .setDisabled(false);
@@ -139,23 +147,20 @@ export default async (client, interaction, d, btnInt, Sconfig) => {
         await startCollector(client, interaction, config, embed, row, backBtn);
 
         async function handleView(interaction, config, embed, row, backBtn) {
-            const list = Object.entries(config).map(([key, value]) => `> **${key}:** ${value}`);
-            const sK = ["main_chat", "main_role"]; // Add your special keys here
-            const modifiedList = list.map(item => {
-                const [key, value] = item.split(": ");
-                const cleanKey = key.replace("> **", "").replace("**", "");
-                console.log(cleanKey);
-                if (sK.includes(cleanKey)) {
-                if (cleanKey === sK[0]) {
-                    return `> **Main chat:** <#${value}>`;
-                } else if (cleanKey === sK[1]) {
-                    return `> **Main role:** <@&${value}>`;
+            const list = Object.entries(config).map(([key, value]) => {
+                switch (key) {
+                    case "main_chat":
+                        return `> **Main chat:** <#${value}>`;
+                    case "main_role":
+                        return `> **Main role:** <@&${value}>`;
+                        
+                    // Add more cases as needed
+                    default:
+                        return `> **${key}:** ${value}`;
                 }
-                }
-                return item;
             });
 
-            embed.setDescription("> Here is your current configurations down below!\n\n" + modifiedList.join("\n"));
+            embed.setDescription("> Here is your current configurations down below!\n\n" + list.join("\n"));
             const msgx = await interaction.editReply({ embeds: [embed], components: [row, backBtn] });
             const backCollector = msgx.createMessageComponentCollector({ componentType: Discord.ComponentType.Button, time: 300000 });
 
@@ -203,26 +208,23 @@ export default async (client, interaction, d, btnInt, Sconfig) => {
                 data = await guild.findOne({ guild: i.guild.id });
             }
 
-            const list = Object.entries(config).map(([key, value]) => `> **${key}:** ${value}`);
-            const sK = ["main_chat", "main_role"]; // Add your special keys here
-            const modifiedList = list.map(item => {
-                const [key, value] = item.split(": ");
-                const cleanKey = key.replace("> **", "").replace("**", "");
-                console.log(cleanKey);
-                if (sK.includes(cleanKey)) {
-                if (cleanKey === sK[0]) {
-                    return `> **Main chat:** <#${value}>`;
-                } else if (cleanKey === sK[1]) {
-                    return `> **Main role:** <@&${value}>`;
+            const list = Object.entries(config).map(([key, value]) => {
+                switch ([key, value]) {
+                    case "main_chat":
+                        return `> **Main chat:** <#${value}>`;
+                    case "main_role":
+                        return `> **Main role:** <@&${value}>`;
+                        
+                    // Add more cases as needed
+                    default:
+                        return `> **${key}:** ${value}`;
                 }
-                }
-                return item;
             });
             await i.deferUpdate();
 
             const embed = new Discord.EmbedBuilder()
                 .setTitle("⚙️ Edit Configurations")
-                .setDescription("> Here is your current configurations! Use the menu below to edit each one!\n\n" + modifiedList.join("\n"))
+                .setDescription("> Here is your current configurations! Use the menu below to edit each one!\n\n" + list.join("\n"))
                 .setFooter(footer("There will always be more configs as time goes on"))
                 .setColor(d.colour);
 
@@ -234,6 +236,12 @@ export default async (client, interaction, d, btnInt, Sconfig) => {
                         .setLabel('Main chat')
                         .setDescription('Change the colour of your embeds!')
                         .setValue('main_chat')
+                        .setEmoji('<:T_pinkarrow:1256904738239287386>')
+                    ,
+                    new Discord.StringSelectMenuOptionBuilder()
+                        .setLabel('Main role')
+                        .setDescription('The role everyone gets')
+                        .setValue('main_role')
                         .setEmoji('<:T_pinkarrow:1256904738239287386>')
                 )
                 .setDisabled(false);
